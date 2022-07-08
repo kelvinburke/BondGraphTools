@@ -25,12 +25,18 @@ __all__ = ["draw"]
 usetex = rcParams.get("usetex")
 
 
-def draw(system):
+def draw(system, layout=_networkx_layout, bounds=None):
     """
     Produces a network layout of the system.
 
     Args:
         system: The system to visualise
+        layout: A function similar to _networkx_layout 
+            that inputs the graph and outputs an array of (x,y) tuples
+            corresponding to the graph's components' locations
+        bounds: An array of length 4 with:
+            [x_min, x_max, y_min, y_max] values
+
 
     Returns:
         :obj:`matplotlib.Plot`
@@ -44,7 +50,7 @@ def draw(system):
     ax = fig.gca()
     ax.set_aspect("equal")
     ax.set_title(f"{system.name}")
-    return _draw(system, ax)
+    return _draw(system, ax, layout,bounds)
 
 
 def _build_graph(system):
@@ -237,7 +243,7 @@ class BondView(Line2D):
         self.set_ydata([y1, y2, y3])
 
 
-def _draw(system, ax, layout=_networkx_layout):
+def _draw(system, ax, layout=_networkx_layout, bounds=None):
 
     graph = _build_graph(system)
 
@@ -247,6 +253,11 @@ def _draw(system, ax, layout=_networkx_layout):
     x_max = 0
     y_min = 0
     y_max = 0
+    if bounds:
+        x_min = bounds[0]
+        x_max = bounds[1]
+        y_min = bounds[2]
+        y_max = bounds[3]
     ax.get_yaxis().set_visible(False)
     ax.get_xaxis().set_visible(False)
     views = {}
