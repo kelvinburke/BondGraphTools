@@ -25,15 +25,15 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt install -y gfortran libblas-dev liblapack-dev git build-essential cmake python3-dev
-        git clone https://github.com/LLNL/sundials.git
+        git clone -b v5.1.0 https://github.com/LLNL/sundials.git
         mkdir sundials/build && cd sundials/build && cmake -DLAPACK_ENABLE=ON ..
         make && sudo make install
         cd .. && cd ..
     - name: Install Python3 Dependencies.
       run: |
         python3 -m pip install scikits.odes
-        python3 -m pip install -r requirements.txt
         python3 -m pip install flake8 pytest coverage mock pytest-cov==2.6.1
+        python3 -m pip install -e .
     - name: Lint with flake8
       run: |
           flake8 BondGraphTools
